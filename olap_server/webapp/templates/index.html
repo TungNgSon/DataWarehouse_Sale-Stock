@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OLAP Cuboid Explorer</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <h1>OLAP Cuboid Explorer</h1>
+    <p>Tap to roll-up, drill-down, and slice Oracle cuboids quickly</p>
+  </header>
+
+  <main class="layout">
+    <section class="panel controls">
+      <h2>Explore</h2>
+
+      <label>Fact table</label>
+      <select id="factSelect"></select>
+
+      <label>Time level</label>
+      <div class="row">
+        <select id="timeLevel"></select>
+        <button id="timeUp" title="Go to broader level">Roll-up</button>
+        <button id="timeDown" title="Go to deeper level">Drill-down</button>
+      </div>
+
+      <label>Item level</label>
+      <div class="row">
+        <select id="itemLevel"></select>
+        <button id="itemUp" title="Go to broader level">Roll-up</button>
+        <button id="itemDown" title="Go to deeper level">Drill-down</button>
+      </div>
+
+      <label id="thirdLabel">Third dimension level</label>
+      <div class="row">
+        <select id="thirdLevel"></select>
+        <button id="thirdUp" title="Go to broader level">Roll-up</button>
+        <button id="thirdDown" title="Go to deeper level">Drill-down</button>
+      </div>
+
+      <div class="actions">
+        <button id="loadBtn" class="primary">Apply View</button>
+        <button id="clearBtn">Reset Slice</button>
+      </div>
+
+      <h3>Quick Slice</h3>
+      <p class="helper">Use only key filters. Click any table row to auto-fill slice.</p>
+      <div class="filters">
+        <input id="f_year" placeholder="year" />
+        <input id="f_quarter" placeholder="quarter" />
+        <input id="f_month" placeholder="month" />
+        <input id="f_item_id" placeholder="item_id" />
+      </div>
+
+      <h3>Context Slice</h3>
+      <div class="filters" id="factSliceFields">
+        <input id="f_customer_type" placeholder="customer_type" class="slice-sold" />
+        <input id="f_customer_id" placeholder="customer_id" class="slice-sold" />
+        <input id="f_state" placeholder="state" class="slice-stock" />
+        <input id="f_city_code" placeholder="city_code" class="slice-stock" />
+        <input id="f_store_id" placeholder="store_id" class="slice-stock" />
+      </div>
+    </section>
+
+    <section class="panel output">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Resolved Cuboid</div>
+          <div class="kpi-value" id="mvName">-</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Rows</div>
+          <div class="kpi-value" id="rowCount">0</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label" id="primaryMetricLabel">Primary Metric</div>
+          <div class="kpi-value" id="primaryMetricValue">-</div>
+        </div>
+      </div>
+
+      <p class="helper">Tip: click a table row to slice by that row, then press Apply View.</p>
+      <canvas id="chart" height="90"></canvas>
+      <div class="table-wrap">
+        <table id="dataTable"></table>
+      </div>
+      <pre id="errorBox"></pre>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
