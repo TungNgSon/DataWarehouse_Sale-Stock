@@ -14,9 +14,9 @@ app = Flask(__name__)
 
 def _get_db_connection():
     return oracledb.connect(
-        user=os.getenv("DB_USER", "KDL_DW"),
-        password=os.getenv("DB_PASSWORD", "kdl_123"),
-        dsn=os.getenv("DB_DSN", "localhost/XEPDB1"), 
+        user=os.getenv("DB_USER", "huy"),
+        password=os.getenv("DB_PASSWORD", "123123"),
+        dsn=os.getenv("DB_DSN", "localhost/DWPDB"),
     )
 
 

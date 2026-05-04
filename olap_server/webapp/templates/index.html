@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -7,6 +8,7 @@
   <link rel="stylesheet" href="/static/style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
   <header class="topbar">
     <h1>OLAP Cuboid Explorer</h1>
@@ -63,6 +65,7 @@
         <input id="f_city_code" placeholder="city_code" class="slice-stock" />
         <input id="f_store_id" placeholder="store_id" class="slice-stock" />
       </div>
+      
     </section>
 
     <section class="panel output">
@@ -82,14 +85,23 @@
       </div>
 
       <p class="helper">Tip: click a table row to slice by that row, then press Apply View.</p>
-      <canvas id="chart" height="90"></canvas>
+      <div style="position: relative; height: 350px; width: 100%;">
+        <canvas id="chart"></canvas>
+      </div>
       <div class="table-wrap">
         <table id="dataTable"></table>
       </div>
       <pre id="errorBox"></pre>
+      <h3>Pivot Table</h3>
+      <div style="margin: 8px 0;">
+       <button id="pivotToggleBtn" class="btn">⬡ Pivot View</button>
+     </div>
+     <div id="pivotContainer" style="display:none; margin-top:12px;"></div>
     </section>
   </main>
 
   <script src="/static/app.js"></script>
+  <script src="/static/pivot.js"></script>
 </body>
+
 </html>

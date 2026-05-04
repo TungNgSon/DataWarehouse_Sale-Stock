@@ -241,6 +241,7 @@ function renderChart(columns, rows) {
   }
 
   const labels = rows.slice(0, 20).map((r) => buildChartLabel(r));
+  
   const chartTitle = timeLevel.value === "yqm"
     ? "Chart label: year / quarter / month"
     : timeLevel.value === "yq"
@@ -256,7 +257,9 @@ function renderChart(columns, rows) {
     borderColor: i === 0 ? "#0f766e" : "#155e75",
     backgroundColor: i === 0 ? "rgba(15,118,110,0.2)" : "rgba(21,94,117,0.2)",
   }));
-
+  console.log("labels:", labels);
+  console.log("datasets[0].data:", datasets[0]?.data);
+  console.log("labels.length:", labels.length, "data.length:", datasets[0]?.data?.length);
   const ctx = document.getElementById("chart");
   if (chart) {
     chart.destroy();
@@ -266,6 +269,7 @@ function renderChart(columns, rows) {
     data: { labels, datasets },
     options: {
       responsive: true,
+      
       plugins: {
         legend: { position: "top" },
         title: {
@@ -273,7 +277,27 @@ function renderChart(columns, rows) {
           text: chartTitle,
         },
       },
-      scales: { x: { ticks: { maxRotation: 45, minRotation: 0 } } },
+      // Ensure category axis and bar alignment
+      scales: {
+        x: {
+       
+          ticks: { maxRotation: 45, minRotation: 0 },
+        },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            // format y-axis ticks using same formatter as table
+            callback: function (value) {
+              try {
+                return numberFormatter.format(value);
+              } catch (e) {
+                return value;
+              }
+            },
+          },
+        },
+      },
+      interaction: { intersect: false, mode: 'index' },
     },
   });
 }
@@ -282,27 +306,41 @@ async function loadData() {
   errorBox.textContent = "";
   syncTimeLevelWithFilters();
   const payload = {
-    fact: factSelect.value,
-    time_level: timeLevel.value,
-    item_level: itemLevel.value,
+    fact:        factSelect.value,
+    time_level:  timeLevel.value,
+    item_level:  itemLevel.value,
     third_level: thirdLevel.value,
-    filters: buildFilters(),
+    filters:     buildFilters(),
   };
-
+ 
   try {
     const resp = await fetch("/api/cuboid-data", {
-      method: "POST",
+      method:  "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      body:    JSON.stringify(payload),
     });
     const data = await resp.json();
-    if (!resp.ok) {
-      throw new Error(data.error || "Request failed");
+    if (!resp.ok) throw new Error(data.error || "Request failed");
+ 
+    // ── NEW: feed pivot module ──────────────────────────────────────
+    if (window.PivotModule) {
+      window.PivotModule.setData(data.columns, data.rows);
+      window.PivotModule.refreshFieldList();
     }
-
-    updateKpis(data.columns, data.rows, data.mv_name);
-    renderTable(data.columns, data.rows);
-    renderChart(data.columns, data.rows);
+    // ───────────────────────────────────────────────────────────────
+ 
+    const pivotActive = document.getElementById("pivotContainer")?.style.display !== "none";
+ 
+    if (!pivotActive) {
+      // Original behavior when pivot is NOT open
+      updateKpis(data.columns, data.rows, data.mv_name);
+      renderTable(data.columns, data.rows);
+      renderChart(data.columns, data.rows);
+    } else {
+      // Still update KPIs (they live outside pivot)
+      updateKpis(data.columns, data.rows, data.mv_name);
+    }
+ 
   } catch (err) {
     errorBox.textContent = err.message;
   }
@@ -354,22 +392,43 @@ function refreshDimensionOptions() {
 async function init() {
   const resp = await fetch("/api/config");
   appConfig = await resp.json();
-
+ 
   setOptions(factSelect, Object.keys(appConfig));
   refreshDimensionOptions();
-
+ 
   factSelect.addEventListener("change", () => {
     refreshDimensionOptions();
     clearFilters();
   });
+ 
   document.getElementById("loadBtn").addEventListener("click", loadData);
   document.getElementById("clearBtn").addEventListener("click", clearFilters);
-
+ 
   bindRollButtons("time", timeLevel);
   bindRollButtons("item", itemLevel);
   bindRollButtons("third", thirdLevel);
-
+ 
+  // ── NEW: pivot toggle ─────────────────────────────────────────────
+  const pivotToggleBtn = document.getElementById("pivotToggleBtn");
+  const pivotContainer = document.getElementById("pivotContainer");
+ 
+  if (pivotToggleBtn && pivotContainer && window.PivotModule) {
+    let pivotInitialized = false;
+ 
+    pivotToggleBtn.addEventListener("click", () => {
+      const isHidden = pivotContainer.style.display === "none";
+      pivotContainer.style.display = isHidden ? "block" : "none";
+      pivotToggleBtn.textContent   = isHidden ? "⬡ Close Pivot" : "⬡ Pivot View";
+ 
+      if (isHidden && !pivotInitialized) {
+        window.PivotModule.init(pivotContainer);
+        pivotInitialized = true;
+      }
+    });
+  }
+  // ──────────────────────────────────────────────────────────────────
+ 
   await loadData();
 }
-
+ 
 init();
