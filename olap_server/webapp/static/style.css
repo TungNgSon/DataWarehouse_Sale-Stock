@@ -485,6 +485,15 @@ th {
   padding: 16px;
   border-top: 1px solid var(--pv-border);
   background: var(--pv-bg);
+  /* larger pivot chart area */
+  min-height: 420px;
+  display: flex;
+  align-items: stretch;
+}
+
+.pv-chart-wrap canvas {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 /* ── Scrollbar styling ── */

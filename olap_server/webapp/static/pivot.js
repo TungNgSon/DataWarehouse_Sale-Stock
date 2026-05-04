@@ -279,6 +279,14 @@ const PALETTE = [
   "#166534","#1e3a5f","#4a044e","#7c2d12","#064e3b",
 ];
 
+// small deep clone helper that prefers structuredClone when available
+function deepClone(obj) {
+  if (typeof structuredClone === 'function') {
+    try { return structuredClone(obj); } catch (_) {}
+  }
+  try { return JSON.parse(JSON.stringify(obj)); } catch (_) { return obj; }
+}
+
 function renderPivotChart(result, canvasEl) {
   const { rowKeys, colKeys, cells, rowFields, columnFields, valueFields } = result;
   if (!valueFields.length || !rowKeys.length) {
@@ -327,20 +335,9 @@ function renderPivotChart(result, canvasEl) {
 
   // If a Chart instance exists, update its data/options and call update()
   if (pivotState._chart) {
-    pivotState._chart.data.labels = labels;
-    pivotState._chart.data.datasets = datasets;
-    // update title and stacked option
-    if (pivotState._chart.options.plugins && pivotState._chart.options.plugins.title) {
-      pivotState._chart.options.plugins.title.text = `${firstValue.field} (${firstValue.aggFunc}) by ${rowFields.join(", ")}`;
-    }
-    pivotState._chart.options.scales = pivotState._chart.options.scales || {};
-    pivotState._chart.options.scales.x = pivotState._chart.options.scales.x || {};
-    pivotState._chart.options.scales.y = pivotState._chart.options.scales.y || {};
-    pivotState._chart.options.scales.x.stacked = pivotState.chartType === "stacked";
-    pivotState._chart.options.scales.y.stacked = pivotState.chartType === "stacked";
-    pivotState._chart.update();
-    return;
-  }
+  pivotState._chart.destroy();
+  pivotState._chart = null;
+}
 
   // Otherwise create a new Chart
   pivotState._chart = new Chart(canvasEl, {
@@ -348,6 +345,7 @@ function renderPivotChart(result, canvasEl) {
     data: { labels, datasets },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: { position: "top" },
         title:  { display: true, text: `${firstValue.field} (${firstValue.aggFunc}) by ${rowFields.join(", ")}` },
