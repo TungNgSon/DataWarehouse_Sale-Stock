@@ -208,6 +208,11 @@ th {
   --pv-zone-over:    rgba(15, 118, 110, 0.08);
   --pv-radius:       6px;
   --pv-font:         'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  /* Fixed size overrides for pivot chart and table. Adjust as needed. */
+  --pv-chart-width: 700px;
+  --pv-chart-height: 420px;
+  --pv-table-width:  700px;
+  --pv-table-height: 380px;
 }
 
 /* ── Container ── */
@@ -433,7 +438,9 @@ th {
 
 .pv-table-wrap {
   overflow: auto;
-  max-height: 380px;
+  max-height: var(--pv-table-height);
+  height: var(--pv-table-height);
+  width: var(--pv-table-width);
   padding: 12px;
 }
 
@@ -485,15 +492,18 @@ th {
   padding: 16px;
   border-top: 1px solid var(--pv-border);
   background: var(--pv-bg);
-  /* larger pivot chart area */
-  min-height: 420px;
+  /* Fixed pivot chart area */
+  width: var(--pv-chart-width);
+  height: var(--pv-chart-height);
   display: flex;
-  align-items: stretch;
+  align-items: center;
+  justify-content: center;
 }
 
 .pv-chart-wrap canvas {
-  width: 100% !important;
-  height: 100% !important;
+  /* Force canvas to the fixed size so Chart.js renders at the desired pixel dimensions */
+  width: var(--pv-chart-width) !important;
+  height: var(--pv-chart-height) !important;
 }
 
 /* ── Scrollbar styling ── */
