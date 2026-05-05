@@ -23,23 +23,48 @@
       <label>Time level</label>
       <div class="row">
         <select id="timeLevel"></select>
-        <button id="timeUp" title="Go to broader level">Roll-up</button>
+        <button id="timeUp"   title="Go to broader level">Roll-up</button>
         <button id="timeDown" title="Go to deeper level">Drill-down</button>
       </div>
 
       <label>Item level</label>
       <div class="row">
         <select id="itemLevel"></select>
-        <button id="itemUp" title="Go to broader level">Roll-up</button>
+        <button id="itemUp"   title="Go to broader level">Roll-up</button>
         <button id="itemDown" title="Go to deeper level">Drill-down</button>
       </div>
 
       <label id="thirdLabel">Third dimension level</label>
       <div class="row">
         <select id="thirdLevel"></select>
-        <button id="thirdUp" title="Go to broader level">Roll-up</button>
+        <button id="thirdUp"   title="Go to broader level">Roll-up</button>
         <button id="thirdDown" title="Go to deeper level">Drill-down</button>
       </div>
+
+      <!-- ── Pivot toggle + panel ───────────────────────────────────────── -->
+      <div class="pivot-toggle-row">
+        <button id="pivotToggle" class="pivot-toggle-btn" title="Switch to Pivot view">⊞ Pivot</button>
+        <span class="helper" style="margin:0">Xoay trục dữ liệu</span>
+      </div>
+
+      <div id="pivotPanel" class="pivot-panel hidden">
+        <div class="pivot-field">
+          <label class="pivot-label">Cột xoay (pivot_col)</label>
+          <select id="pivotCol"></select>
+          <span class="helper">Giá trị cột này → thành các cột mới</span>
+        </div>
+        <div class="pivot-field">
+          <label class="pivot-label">Metric tổng hợp (pivot_val)</label>
+          <select id="pivotVal"></select>
+          <span class="helper">Số liệu được SUM vào từng ô</span>
+        </div>
+        <div class="pivot-field">
+          <label class="pivot-label">Trục hàng (row_dim)</label>
+          <select id="pivotRow"></select>
+          <span class="helper">Mỗi hàng đại diện cho 1 giá trị</span>
+        </div>
+      </div>
+      <!-- ───────────────────────────────────────────────────────────────── -->
 
       <div class="actions">
         <button id="loadBtn" class="primary">Apply View</button>
@@ -49,19 +74,19 @@
       <h3>Quick Slice</h3>
       <p class="helper">Use only key filters. Click any table row to auto-fill slice.</p>
       <div class="filters">
-        <input id="f_year" placeholder="year" />
+        <input id="f_year"    placeholder="year" />
         <input id="f_quarter" placeholder="quarter" />
-        <input id="f_month" placeholder="month" />
+        <input id="f_month"   placeholder="month" />
         <input id="f_item_id" placeholder="item_id" />
       </div>
 
       <h3>Context Slice</h3>
       <div class="filters" id="factSliceFields">
         <input id="f_customer_type" placeholder="customer_type" class="slice-sold" />
-        <input id="f_customer_id" placeholder="customer_id" class="slice-sold" />
-        <input id="f_state" placeholder="state" class="slice-stock" />
-        <input id="f_city_code" placeholder="city_code" class="slice-stock" />
-        <input id="f_store_id" placeholder="store_id" class="slice-stock" />
+        <input id="f_customer_id"   placeholder="customer_id"   class="slice-sold" />
+        <input id="f_state"         placeholder="state"         class="slice-stock" />
+        <input id="f_city_code"     placeholder="city_code"     class="slice-stock" />
+        <input id="f_store_id"      placeholder="store_id"      class="slice-stock" />
       </div>
     </section>
 
@@ -81,7 +106,7 @@
         </div>
       </div>
 
-      <p class="helper">Tip: click a table row to slice by that row, then press Apply View.</p>
+      <p class="helper">Tip: click a table row to slice by that row (normal mode only), then press Apply View.</p>
       <canvas id="chart" height="90"></canvas>
       <div class="table-wrap">
         <table id="dataTable"></table>

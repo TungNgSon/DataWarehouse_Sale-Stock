@@ -1,13 +1,15 @@
 :root {
-  --bg: #f3f5f7;
-  --panel: #ffffff;
-  --ink: #0f172a;
-  --muted: #64748b;
-  --brand: #0f766e;
-  --line: #dbe3ea;
+  --bg:     #f3f5f7;
+  --panel:  #ffffff;
+  --ink:    #0f172a;
+  --muted:  #64748b;
+  --brand:  #0f766e;
+  --line:   #dbe3ea;
+  --pivot:  #7c3aed;   /* purple accent cho pivot */
 }
 
 * { box-sizing: border-box; }
+
 body {
   margin: 0;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -15,30 +17,23 @@ body {
   background: radial-gradient(circle at top right, #dff6f3, #f3f5f7 40%);
 }
 
+/* ── Header ─────────────────────────────────────────────────────────────── */
 .topbar {
   padding: 20px;
   border-bottom: 1px solid var(--line);
   background: linear-gradient(90deg, #0f766e, #155e75);
   color: #ffffff;
 }
+.topbar h1 { margin: 0; font-size: 24px; }
+.topbar p  { margin: 6px 0 0; opacity: 0.9; }
 
-.topbar h1 {
-  margin: 0;
-  font-size: 24px;
-}
-
-.topbar p {
-  margin: 6px 0 0;
-  opacity: 0.9;
-}
-
+/* ── Layout ──────────────────────────────────────────────────────────────── */
 .layout {
   display: grid;
   grid-template-columns: 360px 1fr;
   gap: 16px;
   padding: 16px;
 }
-
 .panel {
   background: var(--panel);
   border: 1px solid var(--line);
@@ -46,16 +41,14 @@ body {
   padding: 14px;
 }
 
+/* ── Controls ────────────────────────────────────────────────────────────── */
 .controls label {
   display: block;
   margin-top: 10px;
   margin-bottom: 6px;
   font-weight: 600;
 }
-
-.controls h3 {
-  margin-bottom: 6px;
-}
+.controls h3 { margin-bottom: 6px; }
 
 .row {
   display: grid;
@@ -69,17 +62,8 @@ select, input, button {
   padding: 8px 10px;
   font-size: 14px;
 }
-
-button {
-  cursor: pointer;
-  background: #f8fafc;
-}
-
-button.primary {
-  background: var(--brand);
-  color: #ffffff;
-  border-color: var(--brand);
-}
+button           { cursor: pointer; background: #f8fafc; }
+button.primary   { background: var(--brand); color: #fff; border-color: var(--brand); }
 
 .actions {
   margin-top: 14px;
@@ -99,37 +83,22 @@ button.primary {
   margin: 6px 0;
   font-size: 13px;
 }
+.hidden { display: none !important; }
 
-.hidden {
-  display: none;
-}
-
-.meta {
-  display: flex;
-  gap: 16px;
-  color: var(--muted);
-  margin-bottom: 8px;
-}
-
+/* ── KPI ─────────────────────────────────────────────────────────────────── */
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
   margin-bottom: 8px;
 }
-
 .kpi-card {
   border: 1px solid var(--line);
   border-radius: 10px;
   padding: 10px;
   background: #f8fbfb;
 }
-
-.kpi-label {
-  color: var(--muted);
-  font-size: 12px;
-}
-
+.kpi-label { color: var(--muted); font-size: 12px; }
 .kpi-value {
   margin-top: 3px;
   font-weight: 700;
@@ -137,6 +106,7 @@ button.primary {
   word-break: break-word;
 }
 
+/* ── Table ───────────────────────────────────────────────────────────────── */
 .table-wrap {
   margin-top: 10px;
   max-height: 420px;
@@ -144,31 +114,17 @@ button.primary {
   border: 1px solid var(--line);
   border-radius: 8px;
 }
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
 th, td {
   border-bottom: 1px solid var(--line);
   text-align: left;
   padding: 8px;
   white-space: nowrap;
 }
+tbody tr:hover { background: #ecfdf5; cursor: pointer; }
+th { position: sticky; top: 0; background: #f8fafc; }
 
-tbody tr:hover {
-  background: #ecfdf5;
-  cursor: pointer;
-}
-
-th {
-  position: sticky;
-  top: 0;
-  background: #f8fafc;
-}
-
+/* ── Error ───────────────────────────────────────────────────────────────── */
 #errorBox {
   margin-top: 10px;
   color: #b91c1c;
@@ -178,12 +134,74 @@ th {
   min-height: 42px;
 }
 
-@media (max-width: 1000px) {
-  .layout {
-    grid-template-columns: 1fr;
-  }
+/* ── Pivot UI ────────────────────────────────────────────────────────────── */
+.pivot-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+}
 
-  .kpi-grid {
-    grid-template-columns: 1fr;
-  }
+/* Toggle button: idle state */
+.pivot-toggle-btn {
+  background: #f3f0ff;
+  color: var(--pivot);
+  border: 1.5px solid #c4b5fd;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+/* Toggle button: active (pivot ON) */
+.pivot-toggle-btn.active {
+  background: var(--pivot);
+  color: #fff;
+  border-color: var(--pivot);
+}
+
+/* Pivot panel container */
+.pivot-panel {
+  margin-top: 10px;
+  background: #faf5ff;
+  border: 1.5px solid #c4b5fd;
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Each row inside pivot panel */
+.pivot-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* Smaller label inside pivot panel */
+.pivot-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--pivot);
+  margin: 0 !important;
+}
+
+/* Override helper inside pivot panel */
+.pivot-panel .helper { margin: 0; font-size: 12px; }
+
+/* Pivot table: highlight pivot value columns (not first col) */
+#dataTable.pivot-table th:not(:first-child),
+#dataTable.pivot-table td:not(:first-child) {
+  background: #fdf4ff;
+  color: #6d28d9;
+  font-weight: 500;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 1000px) {
+  .layout { grid-template-columns: 1fr; }
+  .kpi-grid { grid-template-columns: 1fr; }
 }
